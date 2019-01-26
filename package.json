@@ -2,6 +2,7 @@
     "name": "monaca-template-onsenui-v2-js-splitter",
     "dependencies": {
         "boom": "^7.3.0",
+        "cached-path-relative": "^1.0.2",
         "com.wikitude.phonegap.WikitudePlugin": "file:plugins/com.wikitude.phonegap.WikitudePlugin",
         "cordova-custom-config": "5.0.2",
         "cordova-plugin-geolocation": "4.0.1",
