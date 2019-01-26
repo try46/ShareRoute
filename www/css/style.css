@@ -1,0 +1,156 @@
+/**/
+#getMyCode ons-button{
+  margin-left: 30px;
+}
+#userName{
+  margin-top: 20px;
+  margin-left: 40px;
+}
+#serchId{
+  margin-top: 20px;
+  margin-left: 40px;
+}
+.serchLeft{
+  margin-left: 20px;
+}
+.serchResult{
+  border: solid;
+}
+.createHead{
+  position: relative;
+  left: 40%;
+  top: 50%;
+  transform: translate(-60%,-25%);
+}
+.loginHead{
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-25%);
+}
+#saveRadio{
+  margin-top: 20px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-45%);
+}
+#saveRadio ons-radio{
+  margin-left: 10px;
+}
+#route_Name{
+  width: 80%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.homecenter{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#saveRoadButton{
+  position: relative;
+  left: 50%;
+  transform: translateX(-40%); 
+}
+#saveRoadButton ons-button{
+  width: 40%;
+}
+#recordButton{
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+#qrcode{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  /* transform: translateX(-50%); */
+}
+#detailTable{
+  margin-top: 30px;
+}
+#detailButton button{
+  width: 100%;
+  height: 50px;
+}
+#titleDivImg {
+  width: 100%;
+  height: 100%;
+   background: rgba(104, 228, 156, 0.233);/*背景色*/
+}
+
+#titleDivImg img{
+  position: absolute;
+  top: 5px;
+  left: 20px;
+  width: 90vw;
+  height: auto;
+}
+
+table {
+   width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.tableButton {
+  width: 100%;
+  height: 100%;
+}
+
+#titleDiv {
+  text-align: center;
+  padding: 20px;
+}
+
+#homeButton button{
+  margin: 8px;
+  width: 44%;
+  height: 44%;
+}
+
+.changeButton button{
+  margin: 12px;
+  width: 150px;
+  height: 150px;
+}
+
+.group{
+  margin: 0px,12px;
+}
+
+.center{
+  /* text-align: center; */
+  position: relative;
+  left: 50%;
+  transform: translateX(-45%);
+}
+
+.left{
+  text-align: left;
+}
+
+.right{
+  text-align: right;
+}
+
+.titleButton {
+  widows: 600px;
+  height: 50px;
+}
+
+#InformationArea{
+  position: absolute;
+  top:5%
+}
+
+#infobutton{
+  position: absolute;
+  top:64.0%;
+}

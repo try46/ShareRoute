@@ -1,0 +1,541 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+	<script src="components/loader.js"></script>
+	<script src="js/jquery.qrcode.min.js"></script>
+	<script src="js/login.js"></script>
+	<script src="js/road.js"></script>
+	<script src="js/Gps.js"></script>
+	<script src="js/QRcode.js"></script>
+	<script src="js/DBIO.js"></script>
+	<script src="lib/onsenui/js/onsenui.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=APIキーを設定してください。"></script>
+	<script src="js/mapMini.js"></script>
+  <!-- AR関係 -->
+  <script src="js/ARFunction.js"></script>
+  <script src="js/ARInit.js"></script>
+
+	<link rel="stylesheet" href="components/loader.css">
+	<link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+	<link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+	<link rel="stylesheet" href="css/style.css">
+
+	<script>
+		ons.ready(function() {
+      console.log("Onsen UI is ready!");
+    });
+
+    window.fn = {};
+    window.fn.open = function() {
+      var menu = document.getElementById('menu');
+      menu.open();
+    };
+    window.fn.load = function(page) {
+      var content = document.getElementById('content');
+      var menu = document.getElementById('menu');
+      content
+        .load(page)
+        .then(menu.close.bind(menu));
+      //スライド制御部
+      if(page != "newAccount.html" && page != "Login.html" && page != "title.html" && page != "home.html"){
+        menu.setAttribute("swipeable","");
+      }else{
+        menu.removeAttribute("swipeable");
+      }
+    };
+	</script>
+	<style type="text/css">
+		html {
+			height: 100%
+		}
+
+		body {
+			height: 100%;
+			margin: 0px;
+			padding: 0px
+		}
+
+		#map {
+			height: 100%
+		}
+	</style>
+</head>
+
+<body>
+	<ons-splitter>
+		<ons-splitter-side id="menu" side="left" width="220px" collapse>
+			<ons-page>
+				<ons-list>
+					<ons-list-item onclick="fn.load('home.html')" tappable>
+						ホーム
+					</ons-list-item>
+					<ons-list-item onclick="fn.load('checkRoute.html')" tappable>
+						見る
+					</ons-list-item>
+					<ons-list-item onclick="fn.load('serchRoute.html')" tappable>
+						探す
+					</ons-list-item>
+					<ons-list-item onclick="fn.load('roadRecord.html')" tappable>
+						録る
+					</ons-list-item>
+					<ons-list-item onclick="fn.load('friendRelation.html')" tappable>
+						友達
+					</ons-list-item>
+          <ons-list-item onclick="fn.load('Inquiry.html')" tappable>
+            問い合わせ
+				</ons-list>
+			</ons-page>
+		</ons-splitter-side>
+		<ons-splitter-content id="content" page="title.html"></ons-splitter-content>
+	</ons-splitter>
+
+	<template id="title.html">
+		<ons-page>
+      <div id="titleDivImg">
+        <a onclick="currentIDCheck()"><img id="titlePng" src="img/startscreen.PNG"></a>
+      </div>
+		</ons-page>
+	</template>
+
+	<template id="Login.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="loginHead">
+					ログイン
+				</div>
+			</ons-toolbar>
+			<p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+				<ons-input id="addressLog" modifier="underbar" placeholder="メールアドレス" float></ons-input><br />
+				<br />
+				<ons-input id="pass" modifier="underbar" type="password" placeholder="PassWord"></ons-input><br />
+				<br />
+				<ons-button onclick="login()">ログイン</ons-button><br />
+        <br>
+				<ons-button onclick="fn.load('newAccount.html')">新規登録</ons-button><br>
+        <br>
+			</p>
+		</ons-page>
+	</template>
+
+	<!-- //Create new Account -->
+	<template id="newAccount.html">
+		<ons-page>
+			<ons-toolbar>
+				<ons-back-button onclick="fn.load('Login.html')"></ons-back-button>
+				<div class="left">
+				</div>
+				<div class="createHead">
+					新規アカウント登録
+				</div>
+			</ons-toolbar>
+			<p style="text-align: center; opacity: 0.6; padding-top: 20px;">
+				<ons-input id="address" modifier="underbar" placeholder="メールアドレス" float></ons-input><br />
+        <br>
+				<ons-button onclick="newAccount()">申請</ons-button>
+			</p>
+		</ons-page>
+	</template>
+
+	<template id="firstConf.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="center">
+					初期設定
+				</div>
+			</ons-toolbar>
+			<p>
+				<ons-input id="createUserId" modifier="underbar" placeholder="ユーザ表示名" float></ons-input><br> 周りに表示される名前です
+				<br>
+				<ons-button onclick="firstConfSubmit()">完了</ons-button>
+			</p>
+		</ons-page>
+	</template>
+
+	<template id="home.html">
+		<ons-page>
+			<ons-toolbar>
+				<p class="homecenter">
+					ホーム
+				</p>
+				<p class="right">
+					<ons-button onclick="logout()">Logout</ons-button>
+				</p>
+			</ons-toolbar>
+			<div id="homeButton">
+				<button type="button" name="change" onclick="fn.load('checkRoute.html')">
+          <img src="img/watch.PNG" width="100%" height="100%">
+        </button>
+				<button type="button" name="change" onclick="fn.load('serchRoute.html')">
+          <img src="img/serch.PNG" width="100%" height="100%">
+        </button>
+				<button type="button" name="change" onclick="fn.load('roadRecord.html')">
+          <img src="img/record.PNG" width="100%" height="100%">
+        </button>
+				<button type="button" name="change" onclick="fn.load('friendRelation.html')">
+          <img src="img/friend.PNG" width="100%" height="100%">
+        </button>
+        <button name="change" onclick="fn.load('Inquiry.html')" type="button">
+                <img height="100%" src="img/information.PNG" width="100%">
+        </button>
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="Map.html">
+		<ons-page id="mapPage">
+			<ons-toolbar>
+				<ons-back-button>
+						back
+					</ons-back-button>
+				<div class="center">
+					地図
+				</div>
+			</ons-toolbar>
+			<div id="map">
+			</div>
+			<script>
+				ons.getScriptPage().onInit = function() {
+          this.onShow = function() {
+            createMap();
+          }
+        }
+			</script>
+		</ons-page>
+	</template>
+
+	<template id="checkRoute.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					経路を見る
+				</div>
+			</ons-toolbar>
+			<div class="changeButton">
+				<button onclick="fn.load('myRouteNavi.html')">
+          <img src="img/myroot.PNG" width="100%" height="100%">
+          <!-- 自分の -->
+        </button>
+				<button onclick="fn.load('bookMarkNavi.html')">
+          <img src="img/bookmark.PNG" width="100%" height="100%">
+          <!-- ブックマ -->
+        </button>
+		</ons-page>
+	</template>
+
+	<template id="myRouteNavi.html">
+		<ons-page>
+			<ons-navigator id="myNavigater" animation="slide" var="myNavigater" page="myRoute.html"></ons-navigator>
+		</ons-page>
+	</template>
+
+	<template id="bookMarkNavi.html">
+		<ons-page>
+			<ons-navigator id="myNavigater" animation="slide" var="myNavigater" page="bookMark.html"></ons-navigator>
+		</ons-page>
+	</template>
+
+	<template id="myRoute.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					自分の経路
+				</div>
+			</ons-toolbar>
+			<div id="myRoutes"></div>
+			<script>
+				downloadMyRoute();
+			</script>
+		</ons-page>
+	</template>
+
+	<template id="bookMark.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					ブックマーク
+				</div>
+			</ons-toolbar>
+			<div id="bookMarkRoutes"></div>
+			<script>
+            downloadBookMarkRoute()
+    .then(function (results) { return readRoutebyBookMark(results) })
+    .then(function (resultStr) { writteHTML(resultStr) });
+			</script>
+		</ons-page>
+	</template>
+
+	<template id="routeDetail.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-back-button>
+						back
+					</ons-back-button>
+				</div>
+				<div class="center">
+					経路詳細
+				</div>
+			</ons-toolbar>
+			<div id="detail"> </div>
+			<script>
+				createRouteDetail();
+			</script>
+		</ons-page>
+	</template>
+
+	<template id="serchRoute.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					経路を探す
+				</div>
+			</ons-toolbar>
+			<div>
+				<ons-input id="serchId" modifier="underbar" placeholder="特定コード" float></ons-input>
+				<ons-button class="serchLeft" onclick="serchRoute()">検索</ons-button>
+        <div class="changeButton">
+				  <button onclick="scanBarcode()">
+            <img src="img/readQRcord.PNG" width="100%" height="100%">
+          </button>
+        </div>
+			</div>
+			<div id="serchResult"></div>
+		</ons-page>
+	</template>
+
+	<template id="roadRecord.html">
+		<ons-page>
+			<ons-toolbar>
+        <div class="center">
+					道の記録
+				</div>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+			</ons-toolbar>
+			<button id="recordButton" onclick="recordRoad()"><img id="startbutton" src="img/captureSTART.PNG" width="100%" height="100%"></button>
+			<div id="message">
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="saveRoad.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					道の保存
+				</div>
+			</ons-toolbar>
+			<p>
+				ルートの保存名及び公開レベルを決めてください
+			</p>
+			<ons-input id="route_Name" modifier="underbar" placeholder="ルート名" float></ons-input><br />
+      <div id="saveRadio">
+			<ons-radio name="group" input-id="radio-1" value="1" checked></ons-radio>
+			<label for="radio-1">
+        非公開
+      </label>
+			<ons-radio name="group" input-id="radio-2" value="2"></ons-radio>
+			<label for="radio-2">
+        友達のみ
+      </label>
+			<ons-radio name="group" input-id="radio-3" value="3"></ons-radio>
+			<label for="radio-3">
+        だれでも
+      </label>
+      </div>
+			<br>
+      <div id="saveRoadButton">
+  			<ons-button onclick="fn.load('roadRecord.html')">取り消し</ons-button>
+	  		<ons-button onclick="recordPush()">決定</ons-button>
+      </div>
+			<div id="records">
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="friendRelation.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					友達関連
+				</div>
+			</ons-toolbar>
+			<div class="changeButton">
+				<button onclick="fn.load('makeFriendNavi.html')">
+          <img src="img/addfriend.PNG" width="100%" height="100%">
+          <!-- 友達登録 -->
+        </button>
+				<button onclick="fn.load('myFriendNavi.html')">
+          <img src="img/friendinformation.PNG" width="100%" height="100%">
+          <!-- 友達情報 -->
+        </button>
+			</div>
+		</ons-page>
+	</template>
+
+	<template id="makeFriendNavi.html">
+		<ons-page>
+			<ons-navigator id="myNavigater" animation="slide" var="myNavigater" page="makeFriend.html"></ons-navigator>
+		</ons-page>
+	</template>
+
+  <template id="myFriendNavi.html">
+		<ons-page>
+			<ons-navigator id="myNavigater" animation="slide" var="myNavigater" page="myFriend.html"></ons-navigator>
+		</ons-page>
+	</template>
+
+	<template id="makeFriend.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					友達登録
+				</div>
+			</ons-toolbar>
+			<div>
+				<ons-input id="userName" modifier="underbar" placeholder="友達のUSER NAME" float></ons-input>
+				<ons-button class="serchLeft" onclick="serchRouteforFr()">検索</ons-button>
+        <br>
+        <div class="changeButton">
+				  <button onclick="scanBarcodeforFr()">
+            <img src="img/readQRcord.PNG" width="100%" height="100%">
+          </button>
+        </div>
+				<!-- <ons-button onclick="scanBarcodeforFr()">QRコードで読み取る</ons-button> -->
+			</div>
+      <br>
+			<div id="getMyCode">
+				<ons-button onclick="myCodeCopy()">自分のIDをコピー</ons-button>
+				<ons-button onclick="myCodeQR()">QRを表示</ons-button>
+			</div>
+			<div id="serchResultforFr"></div>
+		</ons-page>
+	</template>
+
+	<template id="myFriend.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left">
+					<ons-toolbar-button onclick="fn.open()">
+						<ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+					</ons-toolbar-button>
+				</div>
+				<div class="center">
+					友達
+				</div>
+			</ons-toolbar>
+			<div id="myFriends"></div>
+			<script>
+            downloadFriendsCode()
+             .then(function (results) { return readFriendInfo(results) })
+             .then(function (resultStr) { writteFriendHTML(resultStr) });
+			</script>
+		</ons-page>
+	</template>
+
+	<template id="friendRouteDetail.html">
+		<ons-page>
+			<ons-toolbar>
+				<ons-back-button class="left"></ons-back-button>
+				<div class="center">
+					友達の経路
+				</div>
+			</ons-toolbar>
+      <div id="friendRoute"></div>
+      <script>
+        downloadFriendRoute();
+      </script>
+		</ons-page>
+	</template>
+
+		<template id="qrcode.html">
+			<ons-page>
+				<ons-toolbar>
+					<ons-back-button class="left">
+						戻る
+					</ons-back-button>
+					<div class="center">
+						QRコード
+					</div>
+				</ons-toolbar>
+				<div id="qrcode">
+				</div>
+				<script>
+        QRCreate();
+				</script>
+			</ons-page>
+		</template>
+    <template id="Inquiry.html">
+    <ons-page>
+        <ons-toolbar>
+            <div class="left">
+                <ons-toolbar-button onclick="fn.open()">
+                    <ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
+                </ons-toolbar-button>
+            </div>
+            <div class="center">
+                問い合わせフォーム
+            </div>
+        </ons-toolbar>
+        <div id="InformationArea">
+            <table align="center" border="1.5" rules="all">
+                <tr>
+                    <td>件名</td>
+                    <td><textarea cols="35" id="subject-line"></textarea></td>
+                </tr>
+                <tr>
+                    <td>本文</td>
+                    <td><textarea cols="35" id="InformationText" rows="15"></textarea></td>
+                </tr>
+            </table>
+        </div>
+        <ons-button id="infobutton" modifier="large" onclick="inputInformation()">
+            問い合わせを送信する
+        </ons-button>
+    </ons-page>
+</template>
+</body>
+
+</html>
