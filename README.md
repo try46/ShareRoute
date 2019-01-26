@@ -1,5 +1,5 @@
 # Shara Route
-
+このアプリケーションはソースコードの一部にApacheLicenseのコードが利用されています
 
 ## What app
 
