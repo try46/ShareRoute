@@ -14,4 +14,4 @@ git 管理する
 
 cordovaプロジェクトに移行する
 
-AndroidJavaで書き直す
+TypeScriptでいい感じに
