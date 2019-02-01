@@ -4,14 +4,15 @@
         "boom": "^7.3.0",
         "cached-path-relative": ">=1.0.2",
         "com.wikitude.phonegap.WikitudePlugin": "file:plugins/com.wikitude.phonegap.WikitudePlugin",
-        "cordova-custom-config": "5.0.2",
-        "cordova-plugin-geolocation": "4.0.1",
-        "cordova-plugin-splashscreen": "5.0.1",
-        "cordova-plugin-whitelist": "1.3.3",
+        "cordova-android": "^7.1.4",
+        "cordova-custom-config": "^5.0.2",
+        "cordova-plugin-geolocation": "^4.0.1",
+        "cordova-plugin-splashscreen": "^5.0.1",
+        "cordova-plugin-whitelist": "^1.3.3",
         "cryptiles": "^4.1.3",
         "hawk": "^7.0.10",
-        "monaca-plugin-barcodescanner": "1.1.4",
-        "monaca-plugin-monaca-core": "3.2.1",
+        "monaca-plugin-barcodescanner": "^1.1.4",
+        "monaca-plugin-monaca-core": "^3.2.1",
         "sntp": "^3.0.2"
     },
     "cordova": {
@@ -23,7 +24,10 @@
             "monaca-plugin-barcodescanner": {},
             "cordova-plugin-geolocation": {},
             "com.wikitude.phonegap.WikitudePlugin": {}
-        }
+        },
+        "platforms": [
+            "android"
+        ]
     },
     "scripts": {
         "monaca:preview": "npm run dev",
