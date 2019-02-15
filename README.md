@@ -12,6 +12,6 @@ git 管理する
 ## TODO
 
 
-cordovaプロジェクトに移行する
+-[x]cordovaプロジェクトに移行する
 
-AndroidJavaで書き直す
+-[]AndroidJavaで書き直す
